@@ -18,7 +18,7 @@
  
 	// List with all marker to check if exist
 	var markerList = {};
-	
+
 	var imagegreen = new google.maps.MarkerImage(
 	  'images/mm_20_green.png',
 		new google.maps.Size(20,20),
@@ -38,14 +38,20 @@
 		new google.maps.Point(0,0),
 		new google.maps.Point(0,10)
 	);
+
+	var imageblue = new google.maps.MarkerImage(
+		'images/mm_20_blue.png',
+		new google.maps.Size(20,20),
+		new google.maps.Point(0,0),
+		new google.maps.Point(0,10)
+		);
 	
-	
-	var shadow = new google.maps.MarkerImage(
-	  'shadow.png',
-		new google.maps.Size(62,35),
-		new google.maps.Point(0, 0),
-		new google.maps.Point(0,35)
-	);
+	var imageyellow = new google.maps.MarkerImage(
+		  'images/mm_20_yellow.png',
+		new google.maps.Size(20,20),
+		new google.maps.Point(0,0),
+		new google.maps.Point(0,10)
+		);
 	 
 	// set error handler for jQuery AJAX requests
 	$.ajaxSetup({"error":function(XMLHttpRequest,textStatus, errorThrown) {   
@@ -108,8 +114,43 @@
 		img = imagegreen;
 		if (markerData['data1'] == "0")
 		{
-			img = imagered;
+			//do nothing
+			
+		}else
+		{
+
+		/*
+		 * [17:43:07] Micheal Twomey: Customer ID, name,Lat, Long,Code A, Code B
+
+			if code A = 0 dont Show
+			if Code A = 1 show colour as base colour (i.e as now)
+			if code B = 2 - show as colour blue
+			if code B = 3 - show as colour yellow
+			
+			
+			if code B = 1 - show as base colour
+			if code B = 2 - show as colour light blue
+			if code B = 3 - show as colour yellow
+
+
+		 */
+		
+		if (markerData['data2'] == "1")
+		{
+			img = imagegreen;
+			
 		}
+		if (markerData['data2'] == "2")
+		{
+			img = imageblue;
+			
+		}
+		if (markerData['data2'] == "3")
+		{
+			img = imageyellow;
+			
+		}
+
 		
 		// create new marker				
 		var marker = new google.maps.Marker({
@@ -139,6 +180,7 @@
 			map.setCenter(defaultLatlng);
 			map.setZoom(defaultZoom);
 		}); 	
+		}//end of data1==0
 	}	
 	
 	/**
