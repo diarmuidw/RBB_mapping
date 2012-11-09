@@ -20,7 +20,7 @@ def sc(data):
 	'''
 	removes all non numeric characters
 	'''
-	print data
+
 	newdata = ''
 	for c in data:
 		if c in '1234567890. ':
@@ -29,7 +29,6 @@ def sc(data):
 	newdata = newdata.lstrip()
 	newdata = newdata.rstrip()
 	newdata = newdata.replace('  ', ' ')
-	
 	return newdata
 
 
@@ -39,17 +38,37 @@ def todec(coord):
 	
 	'''
 	try:
-		
-		data = coord.split(' ')
-		degree = data[0]
-		minutes = float(data[1])/60.0
-		minutes = int(minutes *10000.0)
-		minutes = minutes/10000.0
-		return float(degree) + minutes
+		try:
+			coord = float(coord)
+		except:
+			pass
+		if type(coord) != float:
+			data = coord.split(' ')
+			degree = data[0]
+			minutes = float(data[1])/60.0
+			minutes = int(minutes *10000.0)
+			minutes = minutes/10000.0
+			return float(degree) + minutes
+		else:
+			return coord
 	except Exception, ex:
 		raise ex
 
-doname = True
+system = 'prod'
+
+if system == 'dev':
+	
+	doname = False
+	successfile = 'success.txt'
+	failurefile = 'failure.txt'
+	datafile = 'wrenne.csv'
+	
+else:
+	doname = True
+	successfile = 'successq.txt'
+	failurefile = 'failure.txt'
+	datafile = 'success.txt'
+	
 idcol = 0
 if doname:
 	namecol = 1
@@ -63,12 +82,12 @@ idcol2  = namecol + 4
 
 
 dataarray = []
-success = open('success.txt', 'w')
-failure = open('failure.txt', 'w')
-with open('success.csv', 'rb') as csvfile:
+success = open(successfile, 'w')
+failure = open(failurefile, 'w')
+with open(datafile, 'rb') as csvfile:
 	mapreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 	for row in mapreader:
-		print row
+		
 		#ll data should be in this format
 		#N 51 31.295,W 9 13.145
 		#might be missing a comma
@@ -82,11 +101,10 @@ with open('success.csv', 'rb') as csvfile:
 		
 		#check if they are numeric
 		try:
-			if doname == False:
-				lat = todec(sc(lat))
-				long = todec(sc(long))
-			else:
-				pass
+
+			lat = todec(sc(lat))
+			long = todec(sc(long))
+
 			data = {}
 			data['id'] = row[idcol]
 			
@@ -101,13 +119,13 @@ with open('success.csv', 'rb') as csvfile:
 				data['data1'] = row[idcol1]
 				data['data2'] = row[idcol2]
 			else:
-				data['data1'] = random.randrange(0,2)
-				data['data2'] = random.randrange(0,2)
+				data['data1'] = random.randrange(0,4)
+				data['data2'] = random.randrange(0,4)
 			dataarray.append(data)
 			print  row[0], data['name'], lat, long, data['data1'], data['data2']
 			success.write('%s,%s,%s,%s,%s,%s\n'%(row[0], data['name'], lat, long, data['data1'], data['data2'] ))
 		except Exception, ex:
-			print ex
+			
 			failure.write(''.join(row))
 			failure.write('\n')
 failure.close()
