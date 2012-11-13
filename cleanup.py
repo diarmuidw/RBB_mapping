@@ -67,7 +67,7 @@ else:
 	doname = True
 	successfile = 'successq.txt'
 	failurefile = 'failure.txt'
-	datafile = 'success.txt'
+	datafile = 'new.csv'
 	
 idcol = 0
 if doname:
@@ -84,23 +84,23 @@ idcol2  = namecol + 4
 dataarray = []
 success = open(successfile, 'w')
 failure = open(failurefile, 'w')
-with open(datafile, 'rb') as csvfile:
-	mapreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+with open(datafile, 'rU') as csvfile:
+	mapreader = csv.reader(csvfile, delimiter=';', quotechar='|')
 	for row in mapreader:
 		
 		#ll data should be in this format
 		#N 51 31.295,W 9 13.145
 		#might be missing a comma
-		
-		if row[latcol].find('W')>0:
-			lat = row[latcol][:11]
-			long = row[latcol][11:]
-		else:
-			lat = row[latcol]
-			long = row[longcol]
-		
 		#check if they are numeric
-		try:
+		try:		
+			if row[latcol].find('W')>0:
+				lat = row[latcol][:11]
+				long = row[latcol][11:]
+			else:
+				lat = row[latcol]
+				long = row[longcol]
+			
+
 
 			lat = todec(sc(lat))
 			long = todec(sc(long))
